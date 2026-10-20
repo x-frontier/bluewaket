@@ -1,0 +1,32 @@
+name: Build BlueWake iOS
+
+on:
+  workflow_dispatch: # Allows you to manually trigger the build
+
+jobs:
+  build:
+    runs-on: macos-14 # This runs on Apple's cloud-hosted M-series runners
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Homebrew Dependencies
+        run: |
+          brew install cmake ninja rust llvm lld
+
+      - name: Download Prepared Disc Image
+        run: |
+          # Replace the URL below with your private release asset download link
+          curl -L -o "WindWaker.iso" "YOUR_PRIVATE_RELEASE_ASSET_URL_HERE"
+
+      - name: Execute BlueWake Compiler
+        run: |
+          chmod +x scripts/builder/build.sh
+          # Executes the internal compilation engine using your cloud-downloaded ISO
+          ./scripts/builder/build.sh "WindWaker.iso" --ipa build/BlueWake.ipa
+
+      - name: Upload Finished IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BlueWake-iOS-Unsigned
+          path: build/BlueWake.ipa
