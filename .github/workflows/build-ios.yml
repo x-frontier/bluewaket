@@ -1,14 +1,14 @@
 name: Build BlueWake iOS
 
 on:
-  workflow_dispatch: # Allows you to manually trigger the build
+  workflow_dispatch: # Allows you to manually trigger the build from the Actions tab
 
 jobs:
   build:
-    runs-on: macos-14 # This runs on Apple's cloud-hosted M-series runners
+    runs-on: macos-latest # Dynamically selects GitHub's newest active M-series macOS runner
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2 # Fixed version to resolve Node 20 deprecation warnings
 
       - name: Set up Homebrew Dependencies
         run: |
@@ -16,8 +16,8 @@ jobs:
 
       - name: Download Prepared Disc Image
         run: |
-          # Replace the URL below with your private release asset download link
-          curl -L -o "WindWaker.iso" "YOUR_PRIVATE_RELEASE_ASSET_URL_HERE"
+          # Pulls the full uncut asset from your specific repository fork
+          curl -L -o "WindWaker.iso" "https://github.com/x-frontier/bluewaket/releases/download/v0.8.0/Legend.of.Zelda.The.-.The.Wind.Waker.USA.iso"
 
       - name: Execute BlueWake Compiler
         run: |
